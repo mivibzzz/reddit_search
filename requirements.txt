@@ -1,0 +1,78 @@
+# Requirements.txt - Install with: pip install -r requirements.txt
+
+Flask==3.0.0
+requests==2.31.0
+praw==7.7.1
+beautifulsoup4==4.12.2
+python-whois==0.9.4
+textblob==0.17.1
+lxml==4.9.4
+
+# Setup Instructions:
+
+1. Save all files in your game directory:
+   - server.py (replace existing)
+   - analytics.html (new file)
+   - game.html (keep existing)
+   - alive.png (keep existing)
+   - requirements.txt (new file)
+
+2. Install required packages:
+   pip install -r requirements.txt
+
+3. Download TextBlob corpora (run once):
+   python -c "import nltk; nltk.download('punkt'); nltk.download('brown')"
+
+4. Make sure your local AI model is running on http://127.0.0.1:1234
+
+5. Run the server:
+   python server.py
+
+6. Access your applications:
+   - Original game: http://localhost:7777/
+   - Analytics dashboard: http://localhost:7777/analytics
+   - Through Cloudflare tunnel: https://igai.mivibzzz.es/analytics
+
+Features included:
+
+📊 WEBSITE ANALYSIS:
+- Complete SEO audit (title, meta tags, H1 structure)
+- Technical performance analysis
+- Security headers check
+- SSL certificate validation
+- Domain registration information
+- Sitemap and robots.txt detection
+- Image alt text analysis
+- Link analysis (internal/external)
+
+📱 REDDIT ANALYTICS:
+- Search across all subreddits
+- Sentiment analysis using TextBlob
+- Subreddit distribution analysis
+- Post engagement metrics
+- Real-time discussion tracking
+- Upvote ratio analysis
+
+🤖 AI ASSISTANT:
+- Direct connection to your local Gemma model
+- SEO and marketing expertise
+- Real-time response streaming
+- Loading animations
+- Error handling for offline model
+
+🎨 PROFESSIONAL UI:
+- Modern gradient design
+- Responsive mobile layout
+- Loading animations
+- Color-coded results
+- Interactive tables
+- Tab-based navigation
+- Professional business appearance
+
+All APIs and credentials are properly integrated:
+✅ Reddit API with your credentials
+✅ Local AI model endpoint
+✅ No external API keys required for basic features
+✅ Fully functional offline (except Reddit requires internet)
+
+The platform is production-ready for your Cloudflare tunnel!

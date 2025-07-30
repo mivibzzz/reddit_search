@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Analytics Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 5px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            text-align: center;
+            color: white;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-section {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .input-section h3 {
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .input-group input, .input-group textarea, .input-group select {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            min-width: 250px;
+        }
+
+        .input-group textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+            color: #667eea;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .result-card h4 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-item strong {
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-item span {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover {
+            background: #f8f9ff;
+        }
+
+        .sentiment-positive { color: #27ae60; font-weight: bold; }
+        .sentiment-negative { color: #e74c3c; font-weight: bold; }
+        .sentiment-neutral { color: #f39c12; font-weight: bold; }
+
+        .score-high { color: #27ae60; font-weight: bold; }
+        .score-medium { color: #f39c12; font-weight: bold; }
+        .score-low { color: #e74c3c; font-weight: bold; }
+
+        .ai-response {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .error {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .success-indicator {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .warning-indicator {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .danger-indicator {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .input-group input, .input-group textarea {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Business Analytics Platform</h1>
+            <p>Comprehensive Online Presence Analysis & AI-Powered Insights</p>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('website')">🌐 Website Analysis</div>
+            <div class="tab" onclick="switchTab('reddit')">📱 Reddit Analytics</div>
+            <div class="tab" onclick="switchTab('ai')">🤖 AI Assistant</div>
+        </div>
+
+        <!-- Website Analysis Tab -->
+        <div id="website-tab" class="tab-content active">
+            <div class="input-section">
+                <h3>🔍 Website & Domain Analysis</h3>
+                <div class="input-group">
+                    <input type="text" id="website-url" placeholder="Enter website URL (e.g., example.com or https://example.com)" />
+                    <button class="btn" onclick="analyzeWebsite()">Analyze Website</button>
+                </div>
+            </div>
+
+            <div id="website-loading" class="loading">
+                <div class="spinner"></div>
+                <p>Analyzing website... This may take a few moments.</p>
+            </div>
+
+            <div id="website-results" class="results"></div>
+        </div>
+
+        <!-- Reddit Analytics Tab -->
+        <div id="reddit-tab" class="tab-content">
+            <div class="input-section">
+                <h3>📊 Reddit Sentiment & Discussion Analysis</h3>
+                <div class="input-group">
+                    <input type="text" id="reddit-query" placeholder="Enter search query (brand name, topic, keyword)" />
+                    <select id="reddit-limit">
+                        <option value="25">25 posts</option>
+                        <option value="50" selected>50 posts</option>
+                        <option value="100">100 posts</option>
+                    </select>
+                    <button class="btn" onclick="analyzeReddit()">Search Reddit</button>
+                </div>
+            </div>
+
+            <div id="reddit-loading" class="loading">
+                <div class="spinner"></div>
+                <p>Searching Reddit and analyzing sentiment...</p>
+            </div>
+
+            <div id="reddit-results" class="results"></div>
+        </div>
+
+        <!-- AI Assistant Tab -->
+        <div id="ai-tab" class="tab-content">
+            <div class="input-section">
+                <h3>🧠 AI-Powered SEO & Marketing Assistant</h3>
+                <div class="input-group">
+                    <textarea id="ai-message" placeholder="Ask me anything about SEO, online marketing, website optimization, or paste your data for analysis..."></textarea>
+                </div>
+                <div class="input-group">
+                    <button class="btn" onclick="chatWithAI()">Ask AI Assistant</button>
+                </div>
+            </div>
+
+            <div id="ai-loading" class="loading">
+                <div class="spinner"></div>
+                <p>AI is thinking... Please wait for the response.</p>
+            </div>
+
+            <div id="ai-results" class="results"></div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        async function analyzeWebsite() {
+            const url = document.getElementById('website-url').value.trim();
+            if (!url) {
+                alert('Please enter a website URL');
+                return;
+            }
+
+            const loading = document.getElementById('website-loading');
+            const results = document.getElementById('website-results');
+            
+            loading.style.display = 'block';
+            results.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/analyze-website', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url: url })
+                });
+
+                const data = await response.json();
+                loading.style.display = 'none';
+
+                if (data.error) {
+                    results.innerHTML = `<div class="error">Error: ${data.error}</div>`;
+                    return;
+                }
+
+                displayWebsiteResults(data);
+            } catch (error) {
+                loading.style.display = 'none';
+                results.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        function displayWebsiteResults(data) {
+            const results = document.getElementById('website-results');
+            
+            let html = `
+                <div class="result-card">
+                    <h4>📋 Basic Website Information</h4>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>Status Code:</strong>
+                            <span class="${data.basic_info.status_code === 200 ? 'success-indicator' : 'danger-indicator'}">${data.basic_info.status_code}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Page Title:</strong>
+                            <span>${data.basic_info.title}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Meta Description:</strong>
+                            <span>${data.basic_info.meta_description}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>H1 Tags:</strong>
+                            <span>${data.basic_info.h1_tags.length} found</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Images without Alt Text:</strong>
+                            <span class="${data.basic_info.images_without_alt > 0 ? 'warning-indicator' : 'success-indicator'}">${data.basic_info.images_without_alt} of ${data.basic_info.total_images}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Internal Links:</strong>
+                            <span>${data.basic_info.internal_links}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>External Links:</strong>
+                            <span>${data.basic_info.external_links}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <h4>🔍 SEO Analysis</h4>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>Title Length:</strong>
+                            <span class="${data.seo_analysis.title_length >= 30 && data.seo_analysis.title_length <= 60 ? 'success-indicator' : 'warning-indicator'}">${data.seo_analysis.title_length} characters</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Meta Description Length:</strong>
+                            <span class="${data.seo_analysis.meta_description_length >= 120 && data.seo_analysis.meta_description_length <= 160 ? 'success-indicator' : 'warning-indicator'}">${data.seo_analysis.meta_description_length} characters</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>H1 Tags Count:</strong>
+                            <span class="${data.seo_analysis.h1_count === 1 ? 'success-indicator' : 'warning-indicator'}">${data.seo_analysis.h1_count}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Has Canonical URL:</strong>
+                            <span class="${data.seo_analysis.has_canonical ? 'success-indicator' : 'warning-indicator'}">${data.seo_analysis.has_canonical ? 'Yes' : 'No'}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Structured Data Scripts:</strong>
+                            <span class="${data.seo_analysis.structured_data_scripts > 0 ? 'success-indicator' : 'warning-indicator'}">${data.seo_analysis.structured_data_scripts}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Has Sitemap:</strong>
+                            <span class="${data.seo_analysis.has_sitemap ? 'success-indicator' : 'warning-indicator'}">${data.seo_analysis.has_sitemap ? 'Yes' : 'No'}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Has Robots.txt:</strong>
+                            <span class="${data.seo_analysis.has_robots_txt ? 'success-indicator' : 'warning-indicator'}">${data.seo_analysis.has_robots_txt ? 'Yes' : 'No'}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <h4>⚡ Technical Performance</h4>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>Response Time:</strong>
+                            <span class="${data.technical_audit.response_time < 2 ? 'success-indicator' : data.technical_audit.response_time < 4 ? 'warning-indicator' : 'danger-indicator'}">${data.technical_audit.response_time.toFixed(3)} seconds</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Content Type:</strong>
+                            <span>${data.technical_audit.content_type}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Server:</strong>
+                            <span>${data.technical_audit.server}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Content Size:</strong>
+                            <span>${(data.technical_audit.content_length / 1024).toFixed(2)} KB</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Compression:</strong>
+                            <span class="${data.technical_audit.compression ? 'success-indicator' : 'warning-indicator'}">${data.technical_audit.compression ? 'Enabled' : 'Disabled'}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Cache Control:</strong>
+                            <span>${data.technical_audit.cache_control || 'Not set'}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <h4>🔒 Security Analysis</h4>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>HTTPS:</strong>
+                            <span class="${data.security_check.is_https ? 'success-indicator' : 'danger-indicator'}">${data.security_check.is_https ? 'Enabled' : 'Disabled'}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>HSTS Header:</strong>
+                            <span class="${data.security_check.security_headers.strict_transport_security ? 'success-indicator' : 'warning-indicator'}">${data.security_check.security_headers.strict_transport_security ? 'Present' : 'Missing'}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>X-Frame-Options:</strong>
+                            <span class="${data.security_check.security_headers.x_frame_options ? 'success-indicator' : 'warning-indicator'}">${data.security_check.security_headers.x_frame_options || 'Missing'}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Content Security Policy:</strong>
+                            <span class="${data.security_check.security_headers.content_security_policy ? 'success-indicator' : 'warning-indicator'}">${data.security_check.security_headers.content_security_policy ? 'Present' : 'Missing'}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <h4>🌍 Domain Information</h4>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>Domain:</strong>
+                            <span>${data.domain_info.domain}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Registrar:</strong>
+                            <span>${data.domain_info.registrar}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Creation Date:</strong>
+                            <span>${data.domain_info.creation_date}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Expiration Date:</strong>
+                            <span>${data.domain_info.expiration_date}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            results.innerHTML = html;
+        }
+
+        async function analyzeReddit() {
+            const query = document.getElementById('reddit-query').value.trim();
+            const limit = document.getElementById('reddit-limit').value;
+            
+            if (!query) {
+                alert('Please enter a search query');
+                return;
+            }
+
+            const loading = document.getElementById('reddit-loading');
+            const results = document.getElementById('reddit-results');
+            
+            loading.style.display = 'block';
+            results.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/analyze-reddit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: query, limit: parseInt(limit) })
+                });
+
+                const data = await response.json();
+                loading.style.display = 'none';
+
+                if (data.error) {
+                    results.innerHTML = `<div class="error">Error: ${data.error}</div>`;
+                    return;
+                }
+
+                displayRedditResults(data);
+            } catch (error) {
+                loading.style.display = 'none';
+                results.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        function displayRedditResults(data) {
+            const results = document.getElementById('reddit-results');
+            
+            let html = `
+                <div class="result-card">
+                    <h4>📊 Sentiment Analysis Overview</h4>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>Overall Sentiment:</strong>
+                            <span class="sentiment-${data.sentiment_analysis.average_sentiment.sentiment_label.toLowerCase()}">${data.sentiment_analysis.average_sentiment.sentiment_label}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Polarity Score:</strong>
+                            <span>${data.sentiment_analysis.average_sentiment.polarity.toFixed(3)}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Subjectivity Score:</strong>
+                            <span>${data.sentiment_analysis.average_sentiment.subjectivity.toFixed(3)}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <h4>📈 Subreddit Distribution</h4>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>Total Subreddits:</strong>
+                            <span>${data.subreddit_analysis.total_subreddits}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Total Mentions:</strong>
+                            <span>${data.subreddit_analysis.total_mentions}</span>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Subreddit</th>
+                                    <th>Mentions</th>
+                                    <th>Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+            
+            data.subreddit_analysis.top_subreddits.forEach(([subreddit, count]) => {
+                const percentage = ((count / data.subreddit_analysis.total_mentions) * 100).toFixed(1);
+                html += `
+                    <tr>
+                        <td>r/${subreddit}</td>
+                        <td>${count}</td>
+                        <td>${percentage}%</td>
+                    </tr>`;
+            });
+            
+            html += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <h4>📝 Recent Posts</h4>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Subreddit</th>
+                                    <th>Score</th>
+                                    <th>Comments</th>
+                                    <th>Upvote Ratio</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+            
+            data.search_results.slice(0, 20).forEach(post => {
+                const scoreClass = post.score > 100 ? 'score-high' : post.score > 10 ? 'score-medium' : 'score-low';
+                const date = new Date(post.created_utc).toLocaleDateString();
+                html += `
+                    <tr>
+                        <td><a href="${post.permalink}" target="_blank">${post.title.substring(0, 80)}${post.title.length > 80 ? '...' : ''}</a></td>
+                        <td>r/${post.subreddit}</td>
+                        <td class="${scoreClass}">${post.score}</td>
+                        <td>${post.num_comments}</td>
+                        <td>${(post.upvote_ratio * 100).toFixed(1)}%</td>
+                        <td>${date}</td>
+                    </tr>`;
+            });
+            
+            html += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>`;
+
+            results.innerHTML = html;
+        }
+
+        async function chatWithAI() {
+            const message = document.getElementById('ai-message').value.trim();
+            
+            if (!message) {
+                alert('Please enter a message for the AI');
+                return;
+            }
+
+            const loading = document.getElementById('ai-loading');
+            const results = document.getElementById('ai-results');
+            
+            loading.style.display = 'block';
+            results.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/ai-chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+
+                const data = await response.json();
+                loading.style.display = 'none';
+
+                if (data.error) {
+                    results.innerHTML = `<div class="error">Error: ${data.error}</div>`;
+                    return;
+                }
+
+                displayAIResults(data);
+            } catch (error) {
+                loading.style.display = 'none';
+                results.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        function displayAIResults(data) {
+            const results = document.getElementById('ai-results');
+            const html = `
+                <div class="result-card">
+                    <h4>🤖 AI Assistant Response</h4>
+                    <div class="ai-response">${data.response}</div>
+                </div>
+            `;
+            results.innerHTML = html;
+        }
+
+        // Auto-focus on the first input when switching tabs
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('website-url').focus();
+        });
+    </script>
+</body>
+</html>

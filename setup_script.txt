@@ -1,0 +1,24 @@
+@echo off
+echo Setting up Business Analytics Platform...
+echo.
+
+echo Installing Python packages...
+pip install Flask==3.0.0 requests==2.31.0 praw==7.7.1 beautifulsoup4==4.12.2 python-whois==0.9.4 textblob==0.17.1 lxml==4.9.4
+
+echo.
+echo Downloading TextBlob language models...
+python -c "import nltk; nltk.download('punkt', quiet=True); nltk.download('brown', quiet=True)"
+
+echo.
+echo Setup complete! 
+echo.
+echo To start the server, run: python server.py
+echo.
+echo Your applications will be available at:
+echo - Original game: http://localhost:7777/
+echo - Analytics dashboard: http://localhost:7777/analytics
+echo - Through Cloudflare: https://igai.mivibzzz.es/analytics
+echo.
+echo Make sure your local AI model is running on http://127.0.0.1:1234
+echo.
+pause
