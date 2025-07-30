@@ -23,7 +23,7 @@ A powerful open-source web and Reddit analytics suite built with Flask, combinin
   - Subreddit frequency breakdown
 
 - **AI Chatbot (local inference)**  
-  Sends prompts to a local LLM (e.g., Gemma 12B) for real-time SEO or visibility advice.
+  Sends prompts to a local LLM (e.g., Gemma 12B) for real-time SEO or visibility advice. Run With LM Studio as it is.
 
 - **Built-in Game & Analytics Dashboard**  
   Frontend files (`game.html`, `analytics.html`) can be served for demos or data presentation.
